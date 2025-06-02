@@ -28,11 +28,13 @@ cd "$COMMITS_DIR" || exit 1
 
 head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
     ISSUE_NUM=$(echo "$ISSUE_REF" | tr -d '#')
-    # The following command passes the issue into a json parser (jq), which
-    # can output as tsv. However, newlines both within the .body and the
-    # comments after using gsub to format comments are left as "\n" in the
-    # tab-separated output. Therefore, before sending it to the file, we have
-    # to replace those characters with actual newlines.
+    OUTPUT_FILE="$OLDPWD/$OUTPUT_DIR/#${ISSUE_NUM}.tsv"
+
+    # Write header first
+    echo -e "repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_at\tcomments" > "$OUTPUT_FILE"
+
+    # Append issue information. Make sure to replace all escaped newlines with
+    # actual newlines
     gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json number,title,body,labels,assignees,state,createdAt,updatedAt,comments \
     | jq -r --arg repo "$REPO_NAME" '
         [
@@ -49,8 +51,9 @@ head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
                 [.comments[] | "@\(.author.login)\n\(.body | gsub("\\t";"    ") | gsub("\\|";" "))\n---"]
                 | join("\n")
             )
-        ] | @tsv' | sed 's/\\n/\
-/g' > "$OLDPWD/$OUTPUT_DIR/#${ISSUE_NUM}"
+        ] | @tsv' \
+    | sed 's/\\n/\
+/g' >> "$OUTPUT_FILE"
 done
 
 cd "$OLDPWD" || exit 1
