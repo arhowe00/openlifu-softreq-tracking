@@ -1,8 +1,8 @@
-# SOFTREQ Traceability Automation
+# OpenLIFU Software Tracking
 
-This repository contains automation scripts that support software requirements
-traceability for the OpenLIFU integrated software platform for ultrasound
-research. OpenLIFU encompasses multiple coordinated repositories
+This repository contains scripts that trace software requirements for the
+OpenLIFU integrated software platform for ultrasound research. OpenLIFU
+encompasses multiple coordinated repositories
 ([SlicerOpenLIFU](https://github.com/OpenwaterHealth/SlicerOpenLIFU),
 [OpenLIFU-python](https://github.com/OpenwaterHealth/OpenLIFU-python), and
 [OpenLIFU-app](https://github.com/OpenwaterHealth/OpenLIFU-app)), combining
