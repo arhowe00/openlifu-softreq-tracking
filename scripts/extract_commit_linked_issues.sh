@@ -49,7 +49,8 @@ head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
                 [.comments[] | "@\(.author.login)\n\(.body | gsub("\\t";"    ") | gsub("\\|";" "))\n---"]
                 | join("\n")
             )
-        ] | @tsv' > "$OLDPWD/$OUTPUT_DIR/#${ISSUE_NUM}"
+        ] | @tsv' | sed 's/\\n/\
+/g' > "$OLDPWD/$OUTPUT_DIR/#${ISSUE_NUM}"
 done
 
 cd "$OLDPWD" || exit 1

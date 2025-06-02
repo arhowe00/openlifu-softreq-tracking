@@ -63,6 +63,7 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --json number,t
                     [.comments[] | "@\(.author.login)\n\(.body | gsub("\\t";"    ") | gsub("\\|";" "))\n---"]
                     | join("\n")
                 )
-            ] | @tsv' > "$OUTPUT_DIR/#${ISSUE_NUM}"
+            ] | @tsv' | sed 's/\\n/\
+/g' > "$OUTPUT_DIR/#${ISSUE_NUM}"
     fi
 done
