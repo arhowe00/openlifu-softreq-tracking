@@ -52,8 +52,7 @@ head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
                 | join("\n")
             )
         ] | @tsv' \
-    | sed 's/\\n/\
-/g' >> "$OUTPUT_FILE"
+    >> "$OUTPUT_FILE"
 done
 
 cd "$OLDPWD" || exit 1

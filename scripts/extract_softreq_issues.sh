@@ -66,7 +66,6 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --json number,t
                     | join("\n")
                 )
             ] | @tsv' \
-        | sed 's/\\n/\
-    /g' >> "$OUTPUT_FILE"
+        >> "$OUTPUT_FILE"
     fi
 done
