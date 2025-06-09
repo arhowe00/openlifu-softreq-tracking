@@ -83,12 +83,30 @@ tail -n +2 "$mapping_file" | while read -r line; do
     # Retrieve current issue body
     current_body=$(gh issue view "$primary_issue" -R "$primary_repo_full" --json body -q ".body")
 
-    # Append traceability block to existing issue body
-    new_body="${current_body}${traceability_block}"
+    # Count START and END tags separately. Note that this assumes in good faith
+    # that TRACEABILITY BLOCKs have START and END blocks in succession, and this
+    # script does not verify that the ordering is correct, in case traceability
+    # blocks contain each other.
+    start_count=$(echo "$current_body" | grep -c "<!-- TRACEABILITY BLOCK START -->")
+    end_count=$(echo "$current_body" | grep -c "<!-- TRACEABILITY BLOCK END -->")
 
-    # Update issue description
-    gh issue edit "$primary_issue" -R "$primary_repo_full" --body "$new_body"
+    # Determine number of complete blocks (min of start and end counts)
+    if [ "$start_count" -ge 1 ] && [ "$end_count" -ge 1 ]; then
+        complete_blocks=1
+    else
+        complete_blocks=0
+    fi
 
-    echo "Done updating $primary_repo#$primary_issue."
+    if [ "$complete_blocks" -lt 1 ]; then
+        # No complete existing block found, append traceability block
+        new_body="${current_body}${traceability_block}"
+
+        # Update issue description
+        gh issue edit "$primary_issue" -R "$primary_repo_full" --body "$new_body"
+
+        echo "Traceability block added to $primary_repo#$primary_issue."
+    else
+        echo "Traceability block already exists in $primary_repo#$primary_issue. Skipping."
+    fi
 
 done
