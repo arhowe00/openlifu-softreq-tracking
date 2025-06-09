@@ -39,6 +39,9 @@ fi
 # Read input mapping file
 mapping_file="$1"
 
+# Compute script hash as version (sha1sum used for simplicity, reproducibility)
+# Comment: using sha1sum of the script itself allows versioning even outside git repos.
+script_hash=$(sha1sum "$0" | awk '{print $1}')
 
 # Process mapping file, skipping header
 tail -n +2 "$mapping_file" | while read -r line; do
@@ -74,8 +77,8 @@ tail -n +2 "$mapping_file" | while read -r line; do
     current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
     # Construct traceability block with cleaner start and end markers
-    traceability_block=$(printf "\n\n<!-- TRACEABILITY BLOCK START -->\n\n---\n\n**Traceability Information:**\n- Time: %s\n- Issue: %s\n- SOFTREQ: %s\n- Comment: This issue is related to the requirements defined in %s.\n<!-- TRACEABILITY BLOCK END -->" \
-        "$current_time" "$primary_md" "$foreign_md" "$foreign_md")
+    traceability_block=$(printf "\n\n<!-- TRACEABILITY BLOCK START -->\n\n---\n\n**Traceability Information:**\n- Issue: %s\n- SOFTREQ: %s\n- Comment: This issue is related to the requirements defined in %s.\n\n_This information was populated automatically by a script on %s._\n\n<!-- TRACEABILITY SCRIPT sha1sum %s -->\n\n<!-- TRACEABILITY BLOCK END -->" \
+        "$primary_md" "$foreign_md" "$foreign_md" "$current_time" "$script_hash")
 
     # Display progress
     echo "Updating $primary_repo#$primary_issue ..."
