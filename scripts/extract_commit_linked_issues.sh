@@ -30,11 +30,17 @@ head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
     ISSUE_NUM=$(echo "$ISSUE_REF" | tr -d '#')
     OUTPUT_FILE="$OLDPWD/$OUTPUT_DIR/#${ISSUE_NUM}.tsv"
 
+    # Check if it's a pull request
+    IS_PR=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json isPullRequest -q '.isPullRequest')
+    if [ "$IS_PR" = "true" ]; then
+        echo "Skipping PR #$ISSUE_NUM"
+        continue
+    fi
+
     # Write header first
     echo -e "repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_at\tcomments" > "$OUTPUT_FILE"
 
-    # Append issue information. Make sure to replace all escaped newlines with
-    # actual newlines
+    # Append issue information. Make sure to replace all escaped newlines with actual newlines
     gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json number,title,body,labels,assignees,state,createdAt,updatedAt,comments \
     | jq -r --arg repo "$REPO_NAME" '
         [
