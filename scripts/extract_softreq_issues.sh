@@ -41,7 +41,7 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --json number,t
         MATCH_REQ=1
     fi
 
-    if [ "$MATCH_REQ" -eq 1 ]; then
+    if [ "$MATCH_REQ" -eq 1 ] && [ "$STATE" = "OPEN" ]; then
         OUTPUT_FILE="$OUTPUT_DIR/#${ISSUE_NUM}.tsv"
 
         # Write header first
