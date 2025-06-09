@@ -74,7 +74,7 @@ tail -n +2 "$mapping_file" | while read -r line; do
     current_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
     # Construct traceability block with cleaner start and end markers
-    traceability_block=$(printf "\n\n<!-- TRACEABILITY BLOCK START -->\n\n---\n**Traceability Information:**\n- Time: %s\n- Issue: %s\n- SOFTREQ: %s\n- Comment: This issue addresses the requirements defined in %s.\n<!-- TRACEABILITY BLOCK END -->" \
+    traceability_block=$(printf "\n\n<!-- TRACEABILITY BLOCK START -->\n\n---\n\n**Traceability Information:**\n- Time: %s\n- Issue: %s\n- SOFTREQ: %s\n- Comment: This issue addresses the requirements defined in %s.\n<!-- TRACEABILITY BLOCK END -->" \
         "$current_time" "$primary_md" "$foreign_md" "$foreign_md")
 
     # Display progress
