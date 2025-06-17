@@ -41,7 +41,19 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --json number,t
         MATCH_REQ=1
     fi
 
-    if [ "$MATCH_REQ" -eq 1 ] ; then
+  if [ "$MATCH_REQ" -eq 1 ]; then
+        # ---- Filter out SOFTREQs closed as duplicates ----
+        ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json body,comments,labels)
+        BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
+        COMMENTS=$(echo "$ISSUE_DATA" | jq -r '[.comments[].body] | join("\n")')
+        LABELS_STR=$(echo "$ISSUE_DATA" | jq -r '[.labels[].name] | join(",")')
+
+        if echo "$BODY $COMMENTS $LABELS_STR" | grep -iq "duplicate"; then
+            echo "Skipping issue #$ISSUE_NUM: marked as duplicate."
+            continue
+        fi
+        # --------------------------------------------------
+
         OUTPUT_FILE="$OUTPUT_DIR/#${ISSUE_NUM}.tsv"
 
         # Write header first
