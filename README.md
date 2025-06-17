@@ -60,7 +60,8 @@ repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_a
 ### `extract_softreq_issues.sh`
 
 Extracts issues tagged with `SOFTREQ` or labeled `requirement` from a repository
-and outputs TSV files to `softreq-issues/<repository>/`.
+and outputs TSV files to `softreq-issues/<repository>/`. Includes both open and
+closed SOFTREQs, but not SOFTREQs that were closed as duplicates.
 
 **Output schema (TSV):**
 
