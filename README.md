@@ -45,8 +45,11 @@ Clones a GitHub repository and saves commit messages into
 ### `extract_commit_linked_issues.sh`
 
 Parses commit messages in `commits/<repository>/`, extracts referenced issues
-(e.g., `#123`), and retrieves issue details into
-`commit-linked-issues/<repository>/`.
+(e.g., `#123`), and outputs issue details into
+`commit-linked-issues/<repository>/`, one file per issue.
+
+Only non-pull-request issues with fewer than a given number of traceability
+blocks are included.
 
 **Output schema (TSV):**
 
