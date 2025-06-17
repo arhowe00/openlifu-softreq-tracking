@@ -65,6 +65,40 @@ and outputs TSV files to `softreq-issues/<repository>/`.
 repo	issue_number	title	body	labels	assignees	state	created_at	updated_at	comments
 ```
 
+### `edit_issue_descriptions_with_matching_list.sh`
+
+Appends a traceability block to GitHub issue descriptions, linking them to corresponding software requirements based on a provided mapping file.
+
+**Input format (TSV):**
+
+```sh
+primary_key	SOFTREQ
+<repo1>#<issue1>	<repo2>#<issue2>
+...
+```
+
+- Uses the GitHub CLI (`gh`) and requires authentication.
+- Only appends the block if one does not already exist.
+- Output is committed directly to the issue body via GitHub API.
+
+**Traceability block (appended to issue body):**
+
+```markdown
+<!-- TRACEABILITY BLOCK START -->
+
+---
+
+**Traceability Information:**
+- Issue: [repo#issue](...)
+- SOFTREQ: [repo#issue](...)
+- Comment: This issue is related to the requirements defined in ...
+
+_This information was populated automatically by a script on YYYY-MM-DD._
+
+<!-- TRACEABILITY SCRIPT sha1sum abc123 -->
+<!-- TRACEABILITY BLOCK END -->
+```
+
 ## Questions
 
 Please direct questions about the OpenLIFU project to:
