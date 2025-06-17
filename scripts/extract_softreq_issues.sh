@@ -41,43 +41,46 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --json number,t
         MATCH_REQ=1
     fi
 
-  if [ "$MATCH_REQ" -eq 1 ]; then
-        # ---- Filter out SOFTREQs closed as duplicates ----
-        ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json body,comments,labels)
-        BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
-        COMMENTS=$(echo "$ISSUE_DATA" | jq -r '[.comments[].body] | join("\n")')
-        LABELS_STR=$(echo "$ISSUE_DATA" | jq -r '[.labels[].name] | join(",")')
-
-        if echo "$BODY $COMMENTS $LABELS_STR" | grep -iq "duplicate"; then
-            echo "Skipping issue #$ISSUE_NUM: marked as duplicate."
-            continue
-        fi
-        # --------------------------------------------------
-
-        OUTPUT_FILE="$OUTPUT_DIR/#${ISSUE_NUM}.tsv"
-
-        # Write header first
-        echo -e "repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_at\tcomments" > "$OUTPUT_FILE"
-
-        # Append issue information. Make sure to replace all escaped newlines with
-        # actual newlines
-        gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json number,title,body,labels,assignees,state,createdAt,updatedAt,comments \
-        | jq -r --arg repo "$REPO_NAME" '
-            [
-                $repo,
-                "#" + (.number|tostring),
-                (.title|gsub("\t";"    ")|gsub("\n";" ")|gsub("\\|";" ")),
-                (.body|gsub("\t";"    ")|gsub("\\|";" ")),
-                ([.labels[].name]|join(",")),
-                ([.assignees[].login]|join(",")),
-                .state,
-                .createdAt,
-                .updatedAt,
-                (
-                    [.comments[] | "@\(.author.login)\n\(.body | gsub("\\t";"    ") | gsub("\\|";" "))\n---"]
-                    | join("\n")
-                )
-            ] | @tsv' \
-        >> "$OUTPUT_FILE"
+    if [ "$MATCH_REQ" -eq 0 ]; then
+        echo "Ignoring issue #$ISSUE_NUM: not marked as SOFTREQ."
+        continue
     fi
+
+    # ---- Filter out SOFTREQs closed as duplicates ----
+    ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json body,comments,labels)
+    BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
+    COMMENTS=$(echo "$ISSUE_DATA" | jq -r '[.comments[].body] | join("\n")')
+    LABELS_STR=$(echo "$ISSUE_DATA" | jq -r '[.labels[].name] | join(",")')
+
+    if echo "$BODY $COMMENTS $LABELS_STR" | grep -iq "duplicate"; then
+        echo "Skipping issue #$ISSUE_NUM: marked as duplicate."
+        continue
+    fi
+    # --------------------------------------------------
+
+    OUTPUT_FILE="$OUTPUT_DIR/#${ISSUE_NUM}.tsv"
+
+    # Write header first
+    echo -e "repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_at\tcomments" > "$OUTPUT_FILE"
+
+    # Append issue information. Make sure to replace all escaped newlines with
+    # actual newlines
+    gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json number,title,body,labels,assignees,state,createdAt,updatedAt,comments \
+    | jq -r --arg repo "$REPO_NAME" '
+        [
+            $repo,
+            "#" + (.number|tostring),
+            (.title|gsub("\t";"    ")|gsub("\n";" ")|gsub("\\|";" ")),
+            (.body|gsub("\t";"    ")|gsub("\\|";" ")),
+            ([.labels[].name]|join(",")),
+            ([.assignees[].login]|join(",")),
+            .state,
+            .createdAt,
+            .updatedAt,
+            (
+                [.comments[] | "@\(.author.login)\n\(.body | gsub("\\t";"    ") | gsub("\\|";" "))\n---"]
+                | join("\n")
+            )
+        ] | @tsv' \
+    >> "$OUTPUT_FILE"
 done
