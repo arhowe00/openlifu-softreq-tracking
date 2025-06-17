@@ -40,8 +40,7 @@ head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
     # ---- Issue Qualification Criteria ----
 
     # Check if it's a pull request
-    IS_PR=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json isPullRequest -q '.isPullRequest')
-    if [ "$IS_PR" = "true" ]; then
+    if gh pr view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" > /dev/null 2>&1; then
         echo "Skipping PR #$ISSUE_NUM"
         continue
     fi
