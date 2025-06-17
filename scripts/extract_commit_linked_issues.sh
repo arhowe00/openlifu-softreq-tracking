@@ -39,18 +39,25 @@ head -n 1 * | grep -h -Eo '#[0-9]+' | sort -u | while read -r ISSUE_REF; do
 
     # ---- Issue Qualification Criteria ----
 
-    # Check if it's a pull request
+    # Skip if ithe commit-linked issue is actually a pull request
     if gh pr view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" > /dev/null 2>&1; then
         echo "Skipping PR #$ISSUE_NUM"
         continue
     fi
 
+    # Skip if the title of the issue has SOFTREQ in it
+    TITLE=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json title -q ".title")
+    if echo "$TITLE" | grep -qi "SOFTREQ"; then
+        echo "Skipping commit-linked issue #$ISSUE_NUM due to being a SOFTREQ"
+        continue
+    fi
+
     # Retrieve current issue body
-    current_body=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json body -q ".body")
+    BODY=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json body -q ".body")
 
     # Count number of traceability blocks
-    start_count=$(echo "$current_body" | grep -c "<!-- TRACEABILITY BLOCK START -->")
-    end_count=$(echo "$current_body" | grep -c "<!-- TRACEABILITY BLOCK END -->")
+    start_count=$(echo "$BODY" | grep -c "<!-- TRACEABILITY BLOCK START -->")
+    end_count=$(echo "$BODY" | grep -c "<!-- TRACEABILITY BLOCK END -->")
     traceability_block_count=$((start_count < end_count ? start_count : end_count))
 
     if [ "$traceability_block_count" -ge "$MAX_LINKED_SOFTREQS" ]; then
