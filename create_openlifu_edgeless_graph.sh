@@ -18,7 +18,7 @@ REPOS=(
 for REPO in "${REPOS[@]}"; do
     REPO_NAME=$(basename "$REPO")
     bash scripts/extract_commits.sh "$REPO"
-    bash scripts/extract_commit_linked_issues.sh "$REPO_NAME"
+    bash scripts/extract_commit_linked_issues.sh "$REPO_NAME" 1
     bash scripts/extract_softreq_issues.sh "$REPO_NAME"
 done
 
