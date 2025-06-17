@@ -42,7 +42,6 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --state all --j
     fi
 
     if [ "$MATCH_REQ" -eq 0 ]; then
-        echo "Ignoring issue #$ISSUE_NUM: not marked as SOFTREQ."
         continue
     fi
 
@@ -53,7 +52,7 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --state all --j
     LABELS_STR=$(echo "$ISSUE_DATA" | jq -r '[.labels[].name] | join(",")')
 
     if echo "$BODY $COMMENTS $LABELS_STR" | grep -iq "duplicate"; then
-        echo "Skipping issue #$ISSUE_NUM: marked as duplicate."
+        echo "Skipping SOFTREQ issue #$ISSUE_NUM: marked as duplicate."
         continue
     fi
     # --------------------------------------------------
