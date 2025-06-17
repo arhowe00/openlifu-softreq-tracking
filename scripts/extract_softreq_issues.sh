@@ -23,7 +23,7 @@ OUTPUT_DIR="softreq-issues/$REPO_NAME"
 mkdir -p "$OUTPUT_DIR"
 
 # gh issue list is paginated to 30 by default.
-gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --json number,title,state \
+gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --state all --json number,title,state \
 | jq -c '.[]' \
 | while read -r issue; do
     ISSUE_NUM=$(echo "$issue" | jq '.number')
