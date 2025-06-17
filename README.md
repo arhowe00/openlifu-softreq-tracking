@@ -54,7 +54,7 @@ blocks are included.
 **Output schema (TSV):**
 
 ```sh
-repo	issue_number	title	body	labels	assignees	state	created_at	updated_at	comments
+repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_at\tcomments
 ```
 
 ### `extract_softreq_issues.sh`
@@ -65,18 +65,19 @@ and outputs TSV files to `softreq-issues/<repository>/`.
 **Output schema (TSV):**
 
 ```sh
-repo	issue_number	title	body	labels	assignees	state	created_at	updated_at	comments
+repo\tissue_number\ttitle\tbody\tlabels\tassignees\tstate\tcreated_at\tupdated_at\tcomments
 ```
 
 ### `edit_issue_descriptions_with_matching_list.sh`
 
-Appends a traceability block to GitHub issue descriptions, linking them to corresponding software requirements based on a provided mapping file.
+Appends a traceability block to GitHub issue descriptions, linking them to
+corresponding software requirements based on a provided mapping file.
 
 **Input format (TSV):**
 
 ```sh
-primary_key	SOFTREQ
-<repo1>#<issue1>	<repo2>#<issue2>
+primary_key\tSOFTREQ
+<repo1>#<issue1>\t<repo2>#<issue2>
 ...
 ```
 
