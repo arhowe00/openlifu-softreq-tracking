@@ -46,10 +46,8 @@ gh issue list --repo "OpenwaterHealth/$REPO_NAME" --limit 999999 --state all --j
     fi
 
     # ---- Filter out SOFTREQs closed as duplicates ----
-    ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json body,comments,labels,stateReason)
-    BODY=$(echo "$ISSUE_DATA" | jq -r '.body')
+    ISSUE_DATA=$(gh issue view "$ISSUE_NUM" --repo "OpenwaterHealth/$REPO_NAME" --json labels,stateReason)
     REASON=$(echo "$ISSUE_DATA" | jq -r '.stateReason')
-    COMMENTS=$(echo "$ISSUE_DATA" | jq -r '[.comments[].body] | join("\n")')
     LABELS_STR=$(echo "$ISSUE_DATA" | jq -r '[.labels[].name] | join(",")')
 
     if echo "$BODY $REASON $COMMENTS $LABELS_STR" | grep -iq "duplicate"; then
