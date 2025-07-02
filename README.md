@@ -15,16 +15,9 @@ under [Openwater](https://www.openwater.health)'s requirements management
 framework. See
 [SlicerOpenLIFU#359](https://github.com/OpenwaterHealth/SlicerOpenLIFU/issues/359).
 
-## Repository Goals
+## Prerequisites
 
-- Identify issues referenced in commits across OpenLIFU repositories.
-- Generate a traceability report or matching between issues and software
-  requirements to support gap analyses and audits.
-- Determine whether issues are not yet linked to corresponding SOFTREQ
-  requirements.
-- Provide a format to link issues to SOFTREQ items in a standardized format.
-- Support review and closure of SOFTREQ items once associated development work
-  is complete.
+- `gh` == `2.74.1`
 
 ## Scripts
 
@@ -33,7 +26,7 @@ to support requirement traceability:
 
 ### `extract_commits.sh`
 
-Clones a GitHub repository and saves commit messages into
+Clones a GitHub git repository and saves commit messages into
 `commits/<repository>/`, one file per commit hash.
 
 **Output schema (per file):**
@@ -106,20 +99,20 @@ _This information was populated automatically by a script on YYYY-MM-DD._
 
 ## Questions
 
-Please direct questions about the OpenLIFU project to:
+Please direct questions about the OpenLIFU project to the [Openwater
+team](https://www.openwater.health/about):
 
-### **Openwater**
+### **Contributors**
 
-- Peter Hollender —
-  [phollender@openwater.health](mailto:phollender@openwater.health)
-- Soren Konecky — [soren@openwater.health](mailto:soren@openwater.health)
-- George Vigelette — [george@openwater.cc](mailto:george@openwater.cc)
-
-### **Kitware**
-
-- Ebrahim Ebrahim —
+- Ebrahim Ebrahim (Kitware) -
   [ebrahim.ebrahim@kitware.com](mailto:ebrahim.ebrahim@kitware.com)
-- Sam Horvath — [sam.horvath@kitware.com](mailto:sam.horvath@kitware.com)
-- Andrew Howe — [andrew.howe@kitware.com](mailto:andrew.howe@kitware.com)
-- Sadhana Ravikumar —
+- Peter Hollender (Openwater) -
+  [phollender@openwater.health](mailto:phollender@openwater.health)
+- Sam Horvath (Kitware) -
+  [sam.horvath@kitware.com](mailto:sam.horvath@kitware.com)
+- Andrew Howe (Kitware) -
+  [andrew.howe@kitware.com](mailto:andrew.howe@kitware.com)
+- Sadhana Ravikumar (Kitware) -
   [sadhana.ravikumar@kitware.com](mailto:sadhana.ravikumar@kitware.com)
+- George Vigelette (Openwater) -
+  [george@openwater.cc](mailto:george@openwater.cc)
